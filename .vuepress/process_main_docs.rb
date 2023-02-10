@@ -81,6 +81,17 @@ def process_main_docs(docs_source_dir)
     #FileUtils.mv("docs/configuration/migration/migration.md", "docs/configuration/migration/index.md")
     #FileUtils.cp_r("#{docs_source_dir}/tutorials/images", "docs/configuration/migration")
 
+    puts ">>> Migrating the Settings section"
+
+
+    Dir.glob("#{docs_source_dir}/settings/*.md") { |path|
+        file = File.basename(path)
+        puts " -> #{file}"
+        process_file("#{docs_source_dir}/settings", file, "docs/settings", "#{$docs_repo_root}/settings/#{file}")
+    }
+    puts " -> images"
+    FileUtils.cp_r("#{docs_source_dir}/settings/images", "docs/settings/images")
+
     puts ">>> Migrating the Migration Tutorial section"
 
 
@@ -88,6 +99,16 @@ def process_main_docs(docs_source_dir)
         file = File.basename(path)
         puts " -> #{file}"
         process_file("#{docs_source_dir}/configuration/migration", file, "docs/configuration/migration", "#{$docs_repo_root}/configuration/migration/#{file}")
+    }
+    puts " -> images"
+    #FileUtils.cp_r("#{docs_source_dir}/configuration/images", "docs/configuration") // no images placed yet
+
+    puts ">>> Migrating the Blockly Tutorial section"
+
+    Dir.glob("#{docs_source_dir}/configuration/blockly/*.md") { |path|
+        file = File.basename(path)
+        puts " -> #{file}"
+        process_file("#{docs_source_dir}/configuration/blockly", file, "docs/configuration/blockly", "#{$docs_repo_root}/configuration/blockly/#{file}")
     }
     puts " -> images"
     #FileUtils.cp_r("#{docs_source_dir}/configuration/images", "docs/configuration") // no images placed yet
@@ -139,7 +160,7 @@ def process_main_docs(docs_source_dir)
         puts " -> #{file}"
         process_file("#{docs_source_dir}/developers", file, "docs/developer", "#{$docs_repo_root}/developer/#{file}")
     }
-    ["audio", "bindings", "ioservices", "legacy", "module-types", "osgi", "persistence", "transformations", "utils", "ide"].each { |subsection|
+    ["addons", "audio", "bindings", "ioservices", "legacy", "module-types", "osgi", "persistence", "transformations", "utils", "ide"].each { |subsection|
         Dir.glob("#{docs_source_dir}/developers/#{subsection}/*.md") { |path|
             file = File.basename(path)
             puts " -> #{subsection}/#{file}"

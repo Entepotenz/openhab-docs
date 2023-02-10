@@ -8,17 +8,16 @@ title: Building Pages - Components & Widgets
 
 ## UI Components: introduction and structure
 
-**UI components** are the basic building blocks for many UIs in openHAB 3.
+**UI components** are the basic building blocks for many UIs in openHAB.
 The Main UI Pages and Personal Widgets are notable UI components, but Sitemaps that were created in the UI and HABPanel dashboards are as well.
 
-These structures make up hierarchies that notably define the pages in their entirety are relatively simple:
-
+These structures make up hierarchies that notably define the pages in their entirety, and are relatively simple.
 Each component has:
 
 - A **type**
 - Most of the time, a set of **configuration properties**
 - Optionally, a set of **named slots** which hold collections of more components. By putting components into slots, we therefore define a hierarchy.
-Slots are optional, and have a name; usually when there’s slots involved there’s a `default` slot but not always.
+Slots are optional, and have a name; usually when there’re slots involved there’s a `default` slot but not always.
 
 The semantics of both the config properties and the slots depend on the component type, as well as the allowed sub-component types in the slots.
 The Component Reference provide details on what you can put in a certain component's config & slots.
@@ -51,7 +50,7 @@ slots:
 
 ## Root Components & Props
 
-At the top of the component tree there’s we can find a **root component**.
+At the top of the component tree we can find a **root component**.
 Pages are examples of root components.
 They have additional attributes:
 
@@ -131,7 +130,9 @@ See "Styling" below.
 
 To help you define usable pages, there are a number of built-in widgets that you can use - most of which will be in layout pages. Those built-in widgets revolve around several libraries:
 
-- the **System** library includes "crude" controls that you cannot add with the designers - for instance `oh-button`, `oh-slider`, `oh-colorpicker`. Instead, you're more likely use them within some container (card, list item...) provided by a widget of the Standard library; but when designing a personal widget with a complex layout you may want to use one or several of them directly. You may also use them in a slot of another widget, for those which define some, in order to add additional controls to that widget.
+- the **System** library includes "crude" controls that you cannot add with the designers - for instance `oh-button`, `oh-slider`, `oh-colorpicker`.
+Instead, you're more likely to use them within some container (card, list item...) provided by a widget of the Standard library; but when designing a personal widget with a complex layout you may want to use one or several of them directly.
+You may also use them in a slot of another widget, for those which define some, in order to add additional controls to that widget.
 - the **Standard** library, which has several classes of widgets:
   - **layout widgets**, examples: `oh-block`, `oh-masonry`, `oh-grid-row`, `oh-grid-col` that you usually add with the designer to a layout page
   - **standalone widgets**, examples: `oh-label-card`, `oh-slider-card`, `oh-player-card` - usually not much more than widgets from the System library wrapped in a card
@@ -151,10 +152,27 @@ Expressions are string literals beginning with the symbol `=` and everything aft
 - `vars` is a dictionary of variables (see below) that are available in the component's context
 - `loop` is a dictionary containing iteration information when you're repeating components from a source collection, it is defined only when in the context of a `oh-repeater` component
 - the JavaScript `Math` object (so you can use `Math.floor(...)`, `Math.round(...)` and the like)
-- the JavaScript `JSON` object to parse or produce JSON;
+- the JavaScript `Number` object (see [mdn web docs_: Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number))
+- the JavaScript `JSON` object to parse or produce JSON
 - `dayjs` to build instances of the [day.js library](https://day.js.org/docs/en/parse/now) that you can use to parse or manipulate date & time
 - `theme` which holds the current theme: `ios`, `md` or `aurora`
 - `themeOptions` and `device` allow to use the relevant objects that you can see in the About page, Technical information, View details, under `clientInfo`
+- `screen` returns the [`Screen`](https://developer.mozilla.org/en-US/docs/Web/API/Screen) object. This allows you to access various information about the current screen, e.g. the available width and height. The two properties `viewAreaWidth` and `viewAreaHeight` are added on top. It's recommended to use CSS [`calc()`](#dynamic-styling--positioning-using-css-calc) for dynamic positioning and styling.
+- `user` returns an object with information about the logged in user: the name (`user.name`) and an array of the assigned roles for the user (`user.roles`).
+
+The `@` symbol can be used in front of an item name string as a shortcut to the `displayState` from the `items` dictionary with a fallback to the raw state:
+
+```yaml
+footer: =@'Switch1'
+```
+
+is the same as
+
+```yaml
+footer: =items['Switch1'].displayState || items['Switch1'].state
+```
+
+Similarly, `@@` can be used as a shortcut for just the item state.
 
 Expressions are particularly useful in cases where one wants to combine the states of more than one Item, or use the state of more than one Item in a single widget element.
 For example, the icon of an Item can be based on the state of a different Item.
@@ -204,21 +222,21 @@ Configuring the action type reveal more options in the action sheet:
 
 ### Types of Actions
 
-Action | What it does
--|-
-Navigate to page | Opens a different Page with an optional transition.
-Send command | Issues a command to an Item.
-Toggle Item | Alternate an item between two states by sending commands (regular command if the item's state is different, or an alternative command if the state is equal to the regular command). Typically used with ON/OFF.
-Command options | Issues a command to the configured Item based on a comma-separated locally-defined list of options, or on the Item's State Description.
-Run rule | Trigger a rule directly.
-Open popup | Open a Page or personal widget in a popup which will be displayed fullscreen on phones and in a 630x630-pixel modal dialog on larger screens.
-Open popover | Open a Page or personal widget in a small "callout" comic-like bubble
-Open sheet | Open a Page or personal widget in a drawer appearing from the bottom of the screen.
-Open photo browser | Displays a full screen interface to view one of several images
-Group details | Used with Group items to open a popup with an automatically-generated list of the members of the group, represented by their default list item widget. For Groups with a base type like Switch, a standard card widget will also be shown for the Group itself.
-Analyze Item(s) | Opens the Analyzer window for the specified item(s) and period
-External URL | Open an external web page
-Set Variable | Set a variable that you can use in other parts of the page or widget.
+| Action             | What it does                                                                                                                                                                                                                                                    |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Navigate to page   | Opens a different Page with an optional transition.                                                                                                                                                                                                             |
+| Send command       | Issues a command to an Item.                                                                                                                                                                                                                                    |
+| Toggle Item        | Alternate an item between two states by sending commands (regular command if the item's state is different, or an alternative command if the state is equal to the regular command). Typically used with ON/OFF.                                                |
+| Command options    | Issues a command to the configured Item based on a comma-separated locally-defined list of options, or on the Item's State Description.                                                                                                                         |
+| Run rule           | Trigger a rule directly.                                                                                                                                                                                                                                        |
+| Open popup         | Open a Page or personal widget in a popup which will be displayed fullscreen on phones and in a 630x630-pixel modal dialog on larger screens.                                                                                                                   |
+| Open popover       | Open a Page or personal widget in a small "callout" comic-like bubble                                                                                                                                                                                           |
+| Open sheet         | Open a Page or personal widget in a drawer appearing from the bottom of the screen.                                                                                                                                                                             |
+| Open photo browser | Displays a full screen interface to view one of several images                                                                                                                                                                                                  |
+| Group details      | Used with Group items to open a popup with an automatically-generated list of the members of the group, represented by their default list item widget. For Groups with a base type like Switch, a standard card widget will also be shown for the Group itself. |
+| Analyze Item(s)    | Opens the Analyzer window for the specified item(s) and period                                                                                                                                                                                                  |
+| External URL       | Open an external web page                                                                                                                                                                                                                                       |
+| Set Variable       | Set a variable that you can use in other parts of the page or widget.                                                                                                                                                                                           |
 
 ::: tip
 
@@ -248,10 +266,10 @@ If you name the parameter group `action` there won't be a prefix anymore so the 
 
 Examples:
 
-| Group Name | Prop Name Examples |
-|------------|--------------------|
-| action     | `action, actionItem, actionCommand, actionCommandAlt` |
-| tapAction  | `tap_action, tap_actionItem, tap_actionCommand, tap_actionCommandAlt` |
+| Group Name | Prop Name Examples                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| action     | `action, actionItem, actionCommand, actionCommandAlt`                                     |
+| tapAction  | `tap_action, tap_actionItem, tap_actionCommand, tap_actionCommandAlt`                     |
 | sceneOne   | `sceneOne_action, sceneOne_actionItem, sceneOne_actionCommand, sceneOne_actionCommandAlt` |
 
 You can dump the `props` objects in JSON to verify the names like in the following example (or just use `=JSON.stringify(props)` wherever you can display text in your widget):
@@ -294,7 +312,7 @@ slots:
 
 ## Variables
 
-Varibles are a way to allow more complex scenarios in pages & personal widget development.
+Variables are a way to allow more complex scenarios in pages & personal widget development.
 
 Variables can be used using several methods:
 
@@ -306,7 +324,7 @@ Variables can be used using several methods:
   still be set to set the widget to the item's state, when
   the variable has no value.
 - the `vars`object available in expressions (for example
-  `=vars.var1` will evaluate to the value of the variable `var1`.
+  `=vars.var1` will evaluate to the value of the variable `var1`).
 - the `variable` action allows to set a fixed or computed
   (using an expression) value to a variable.
 
@@ -380,30 +398,20 @@ These resources will help you with Flexbox and Grid:
 - [A Complete Guide to Grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
 - [Grid Tutorial on W3Schools](https://www.w3schools.com/css/css_grid.asp)
 
-## Personal Widgets
+### Dynamic Styling & Positioning using CSS `calc()`
 
-You can extend the library of widgets you have at your disposal by creating personal ones, either by yourself, or copy-pasting from examples by the community; then you can reuse them on pages, multiple times if need be, simply configuring their props to your needs.
-To add a new personal widget, as an admin, go to **Developer Tools > Widgets**, then use the '+' button to create a new one.
+You can dynamically style and position elements by calculating their CSS properties with the `calc()` function.
+The `calc()` function is able to perform math (`+`, `-`, `*` & `/`) on multiple CSS values, which can even have different units.
 
-The view features a code (YAML) editor and a live preview, you can change the orientation with the button in the center of the bottom toolbar.
+For example, to set the height of a component to the current page's maximum content height (without scrolling), use the following `calc()` statement:
 
-::: warning WARNING
-
-Don't forget to change the `uid` right away because you won't be able to alter it afterwards.
-
-:::
-
-Sometimes the live preview will fail to update, you may want to hit the Redraw button or <kbd>Ctrl-R</kbd>/<kbd>Cmd-R</kbd> regularly when designing your widget.
-
-To actually see how the config sheet would look like, and specify props for your widget for the live preview, click on Set props (<kbd>Ctrl-P</kbd>) and configure them as needed.
-
-After saving the widget, you will have it as an option (under "Personal widgets") to add it to a layout page, or display in a modal like a popover, or use it as the default representation of an item.
-
-Note the special `widget:<uid>` syntax for the component type to specify "use this personal widget here", the `config` being the value to wish to assign to the widget props:
-
-```yaml
-component: widget:widget_0a26c10a4d
-config:
-  prop1: Test
-  item: Color1
+```css
+calc(96vh - var(--f7-navbar-height) - var(--f7-toolbar-height))
 ```
+
+This subtracts the height of the navbar and the toolbar, which are stored in CSS vars, from 96% of the viewports height.
+
+These resources will help you with `calc()`:
+
+- [mdn web docs_: calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc)
+- [CSS-Tricks: A Complete Guide to calc() in CSS](https://css-tricks.com/a-complete-guide-to-calc-in-css/)

@@ -5,10 +5,8 @@ title: Bindings
 
 # Developing a Binding
 
-{:.no_toc}
-
 A binding is an extension to openHAB that integrates an external system like a software service or a hardware device.
-The external system is represented as a set of *Things* and sometimes *Bridges* with *Channels*.
+The external system is represented as a set of _Things_ and sometimes _Bridges_ with _Channels_.
 
 This chapter covers everything to know about binding development.
 It makes sense to briefly read over all sections to make you familiar with what the framework has to offer.
@@ -17,40 +15,32 @@ It makes sense to briefly read over all sections to make you familiar with what 
 
 During development you might come back with specific questions.
 
-{::options toc_levels="2,3"/}
-
-- TOC
-{:toc}
-
-## Structure of a Binding
-
-Every binding needs to define a `binding.xml` file.
-Find more information in the respective [binding XML reference](binding-xml.html).
+[[toc]]
 
 ## Describing Things
 
-External systems are represented as *Things* in openHAB.
+External systems are represented as _Things_ in openHAB.
 When starting the implementation of a binding, you should think about the abstraction of your external system.
-Different services or devices should be represented as individual *Things*.
-Each functionality of the *Thing* should be modelled as a `Channel`.
+Different services or devices should be represented as individual _Things_.
+Each functionality of the _Thing_ should be modelled as a `Channel`.
 
-*Thing* and *Channel* structures need to be explained to the openHAB runtime.
-This is done in a declarative way via XML files, so called *ThingTypes* and *ChannelTypes*.
+_Thing_ and _Channel_ structures need to be explained to the openHAB runtime.
+This is done in a declarative way via XML files, so called _ThingTypes_ and _ChannelTypes_.
 
 Find more information in the respective [Thing & Channel XML reference](thing-xml.html).
 
 ## The ThingHandlerFactory
 
-For each *Thing* the binding must provide a proper `ThingHandler` implementation that is able to handle the communication.
+For each _Thing_ the binding must provide a proper `ThingHandler` implementation that is able to handle the communication.
 
 The `ThingHandlerFactory` is responsible for creating `ThingHandler` instances.
 
 Every binding must implement a `ThingHandlerFactory` and register it as OSGi service so that the runtime knows which class needs to be called for creating and handling things.
 
-When a new *Thing* is added, the openHAB runtime queries every `ThingHandlerFactory` for support of the *ThingType* by calling the `supportsThingType` method.
+When a new _Thing_ is added, the openHAB runtime queries every `ThingHandlerFactory` for support of the _ThingType_ by calling the `supportsThingType` method.
 When the method returns `true`, the runtime calls `createHandler`, which should then return a proper `ThingHandler` implementation.
 
-A weather bindings `WeatherHandlerFactory` for example supports only one *ThingType* and instantiates a new `WeatherHandler` for a given thing:
+A weather bindings `WeatherHandlerFactory` for example supports only one _ThingType_ and instantiates a new `WeatherHandler` for a given thing:
 
 ```java
 @NonNullByDefault
@@ -77,10 +67,10 @@ public class WeatherHandlerFactory extends BaseThingHandlerFactory {
 }
 ```
 
-Constants like the `THING_TYPE_WEATHER` UID and also *Channel* UIDs are typically defined inside a public `BindingConstants` class.
+Constants like the `THING_TYPE_WEATHER` UID and also _Channel_ UIDs are typically defined inside a public `BindingConstants` class.
 
-Depending on your implementation, each *ThingType* may use its own handler.
-It is also possible to use the same handler for different *Things*, or use different handlers for the same *ThingType*, depending on the configuration.
+Depending on your implementation, each _ThingType_ may use its own handler.
+It is also possible to use the same handler for different _Things_, or use different handlers for the same _ThingType_, depending on the configuration.
 
 ## The ThingHandler
 
@@ -93,11 +83,11 @@ Nevertheless if there are reasons why you can not use the base class, the bindin
 
 The communication between the framework and the ThingHandler is bidirectional.
 
-If the framework wants the binding to do something or just notfiy it about changes,
+If the framework wants the binding to do something or just notify it about changes,
 it calls methods like `handleCommand`, `handleUpdate` or `thingUpdated`.
 
 If the ThingHandler wants to inform the framework about changes, it uses a callback
- The `BaseThingHandler` provides convience methods like `updateState`, `updateStatus` `updateThing` or `triggerChannel`, that can be used to inform the framework about changes.
+ The `BaseThingHandler` provides convenience methods like `updateState`, `updateStatus` `updateThing` or `triggerChannel`, that can be used to inform the framework about changes.
 
 The overall structure looks like this:
 
@@ -133,14 +123,14 @@ The `ThingManager` creates for each Thing a `ThingHandler` instance using a `Thi
 Therefore, it tracks all `ThingHandlerFactory`s from the binding.
 
 The `ThingManager` determines if the `Thing` is initializable or not.
-A `Thing` is considered as *initializable* if all *required* configuration parameters (cf. property *parameter.required* in [Configuration Description](config-xml.html)) are available.
+A `Thing` is considered as _initializable_ if all _required_ configuration parameters (cf. property _parameter.required_ in [Configuration Description](config-xml.html)) are available.
 If so, the method `ThingHandler.initialize()` is called.
 
-Only Things with status (cf. [Thing Status](../../concepts/things.html#thing-status)) *UNKNOWN*, *ONLINE* or *OFFLINE* are considered as *initialized* by the framework and therefore it is the handler's duty to assign one of these states sooner or later.
+Only Things with status (cf. [Thing Status](../../concepts/things.html#thing-status)) _UNKNOWN_, _ONLINE_ or _OFFLINE_ are considered as _initialized_ by the framework and therefore it is the handler's duty to assign one of these states sooner or later.
 To achieve that, the status must be reported to the framework via the callback or `BaseThingHandler.updateStatus(...)` for convenience.
 Furthermore, the framework expects `initialize()` to be non-blocking and to return quickly.
 For longer running initializations, the implementation has to take care of scheduling a separate job which must guarantee to set the status eventually.
-Also, please note that the framework expects the `initialize()` method to handle anticipated error situations gracefully and set the thing to *OFFLINE* with the corresponding status detail (e.g. *COMMUNICATION_ERROR* or *CONFIGURATION_ERROR* including a meaningful description) instead of throwing exceptions.
+Also, please note that the framework expects the `initialize()` method to handle anticipated error situations gracefully and set the thing to _OFFLINE_ with the corresponding status detail (e.g. _COMMUNICATION\_ERROR_ or _CONFIGURATION\_ERROR_ including a meaningful description) instead of throwing exceptions.
 
 If the `Thing` is not initializable the configuration can be updated via `ThingHandler.handleConfigurationUpdate(Map)`.
 The binding has to notify the `ThingManager` about the updated configuration by a callback.
@@ -165,18 +155,18 @@ After the handler is disposed, the framework will not call the handler anymore.
 
 #### Bridge Status Changes
 
-A `ThingHandler` is notified about Bridge status changes to *ONLINE* and *OFFLINE* after a `BridgeHandler` has been initialized.
+A `ThingHandler` is notified about Bridge status changes to _ONLINE_ and _OFFLINE_ after a `BridgeHandler` has been initialized.
 Therefore, the method `ThingHandler.bridgeStatusChanged(ThingStatusInfo)` must be implemented
 (this method is not called for a bridge status updated through the bridge initialization itself).
 If the Thing of this handler does not have a Bridge, this method is never called.
 
-If the bridge status has changed to OFFLINE, the status of the handled thing must also be updated to *OFFLINE* with detail *BRIDGE_OFFLINE*.
-If the bridge returns to *ONLINE*, the thing status must be changed at least to *OFFLINE* with detail *NONE* or to another thing specific status.
+If the bridge status has changed to OFFLINE, the status of the handled thing must also be updated to _OFFLINE_ with detail _BRIDGE\_OFFLINE_.
+If the bridge returns to _ONLINE_, the thing status must be changed at least to _OFFLINE_ with detail _NONE_ or to another thing specific status.
 
 ### Configuration
 
-*Things* can be configured with parameters.
-To retrieve the configuration of a *Thing* one can call `getThing().getConfiguration()` inside the `ThingHandler`.
+_Things_ can be configured with parameters.
+To retrieve the configuration of a _Thing_ one can call `getThing().getConfiguration()` inside the `ThingHandler`.
 The configuration class has the equivalent methods as the `Map` interface, thus the method `get(String key)` can be used to retrieve a value for a given key.
 
 Moreover the configuration class has a utility method `as(Class<T> configurationClass)` that transforms the configuration into a Java object of the given type.
@@ -187,9 +177,9 @@ The following types are supported for configuration values: `Boolean`, `boolean`
 
 ### Properties
 
-*Things* can have properties.
+_Things_ can have properties.
 If you would like to add meta data to your thing, e.g. the vendor of the thing, then you can define your own thing properties by simply adding them to the thing type definition.
-The properties section [here](thing-definition.html#Properties) explains how to specify such properties.
+The properties section [here](thing-xml.html#properties) explains how to specify such properties.
 
 To retrieve the properties one can call the operation `getProperties` of the corresponding `org.openhab.core.thing.type.ThingType` instance.
 If a thing will be created for this thing type then its properties will be automatically copied into the new thing instance.
@@ -199,7 +189,7 @@ In contrast to the `getProperties` operation of the thing type instance the resu
 ### Handling Commands
 
 For handling commands the `ThingHandler` interface defines the `handleCommand` method.
-This method is called when a command is sent to an item, which is linked to a channel of the *Thing*.
+This method is called when a command is sent to an item, which is linked to a channel of the _Thing_.
 A Command represents the intention that an action should be executed on the external system,
 or that the state should be changed.
 Inside the `handleCommand` method binding specific logic can be executed.
@@ -327,8 +317,8 @@ It is binding specific when the channel should be triggered.
 
 ### Updating the Thing Status
 
-The *ThingHandler* must also manage the thing status (see also: [Thing Status Concept](../../concepts/things.html#thing-status)).
-If the device or service is not working correctly, the binding should change the status to *OFFLINE* and back to *ONLINE*, if it is working again.
+The _ThingHandler_ must also manage the thing status (see also: [Thing Status Concept](../../concepts/things.html#thing-status)).
+If the device or service is not working correctly, the binding should change the status to _OFFLINE_ and back to _ONLINE_, if it is working again.
 The status can be updated via an inherited method from the BaseThingHandler class by calling:
 
 ```java
@@ -346,8 +336,8 @@ updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.COMMUNICATION_ERROR,
 ```
 
 After the thing is created, the framework calls the `initialize` method of the handler.
-At this time the state of the thing is *INTIALIZING* as long as the binding sets it to something else.
-Because of this the default implementation of the `initialize()` method in the `BaseThingHandler` just changes the status to *ONLINE*.
+At this time the state of the thing is _INITIALIZING_ as long as the binding sets it to something else.
+Because of this the default implementation of the `initialize()` method in the `BaseThingHandler` just changes the status to _ONLINE_.
 
 ::: tip Note
 A binding should not set any other state than ONLINE, OFFLINE and UNKNOWN.
@@ -458,17 +448,17 @@ the framework does not call the `thingUpdated` method to avoid infinite loops.
 
 In the domain of an IoT system there are often hierarchical structures of devices and services.
 For example, one device acts as a gateway that enables communication with other devices that use the same protocol.
-In openHAB this kind of device or service is called *Bridge*.
+In openHAB this kind of device or service is called _Bridge_.
 Philips Hue is one example of a system that requires a bridge.
 The Hue gateway is an IP device with an HTTP API, which communicates over the ZigBee protocol with the Hue bulbs.
-In the openHAB model the Hue gateway is represented as a *Bridge* with connected *Things*, that represent the Hue bulbs.
-*Bridge* inherits from *Thing*, so that it also has *Channels* and all other features of a thing, with the addition that it also holds a list of things.
+In the openHAB model the Hue gateway is represented as a _Bridge_ with connected _Things_, that represent the Hue bulbs.
+_Bridge_ inherits from _Thing_, so that it also has _Channels_ and all other features of a thing, with the addition that it also holds a list of things.
 
-We have a FAQ, dicussing [Thing, Bridge and Channel modelling](faq.html#structuring-things-and-thing-types).
+We have a FAQ, discussing [Thing, Bridge and Channel modelling](faq.html#structuring-things-and-thing-types).
 
-When implementing a binding with *Bridges*, the logic to communicate with the external system is often shared between the different `ThingHandler` implementations.
-In that case it makes sense to implement a handler for the *Bridge* and delegate the actual command execution from the *ThingHandler* to the *BridgeHandler*.
-To access the *BridgeHandler* from the *ThingHandler*, call `getBridge().getHandler()`
+When implementing a binding with _Bridges_, the logic to communicate with the external system is often shared between the different `ThingHandler` implementations.
+In that case it makes sense to implement a handler for the _Bridge_ and delegate the actual command execution from the _ThingHandler_ to the _BridgeHandler_.
+To access the _BridgeHandler_ from the _ThingHandler_, call `getBridge().getHandler()`
 
 The following excerpt shows how the `HueLightHandler` delegates the command for changing the light state to the `HueBridgeHandler`:
 
@@ -489,11 +479,11 @@ public void handleCommand(ChannelUID channelUID, Command command) {
 }
 ```
 
-Inside the `BridgeHandler` the list of *Things* can be retrieved via the `getThings()` call.
+Inside the `BridgeHandler` the list of _Things_ can be retrieved via the `getThings()` call.
 
 ### Bridge Handler Implementation
 
-A `BridgeHandler` handles the communication between the openHAB framework and a *bridge*  (a device that acts as a gateway to enable the communication with other devices) represented by a `Bridge` instance.
+A `BridgeHandler` handles the communication between the openHAB framework and a _bridge_  (a device that acts as a gateway to enable the communication with other devices) represented by a `Bridge` instance.
 
 A bridge handler has the same properties as thing handler.
 Therefore, the `BridgeHandler` interface extends the `ThingHandler` interface.
@@ -506,7 +496,7 @@ It is recommended to use this class, because it covers a lot of common logic.
 ### Life cycle
 
 A `BridgeHandler` has the same life cycle than a `ThingHandler` (created by a `ThingHandlerFactory`, well defined life cycle by handler methods `initialize()` and `dispose()`, see chapter [Life Cycle](#lifecycle)).
-A bridge acts as a gateway in order to provide access to other devices, the *child things*.
+A bridge acts as a gateway in order to provide access to other devices, the _child things_.
 Hence, the life cycle of a child handler depends on the life cycle of a bridge handler.
 Bridge and child handlers are subject to the following restrictions:
 
@@ -530,7 +520,7 @@ For this purpose the handler of the entity implements the interface `org.openhab
 
 ### Providing the Configuration Status
 
-A *ThingHandler* as handler for the thing entity can provide the configuration status of the thing by implementing the `org.openhab.core.config.core.status.ConfigStatusProvider` interface.
+A _ThingHandler_ as handler for the thing entity can provide the configuration status of the thing by implementing the `org.openhab.core.config.core.status.ConfigStatusProvider` interface.
 
 For things that are created by sub-classes of the `BaseThingHandlerFactory` the provider is already automatically registered as an OSGi service if the concrete thing handler implements the configuration status provider interface.
 Currently the framework provides two base thing handler implementations for the configuration status provider interface:
@@ -545,7 +535,7 @@ Sub-classes of these handlers must only override the operation `getConfigStatus`
 The framework will take care of internationalizing messages.
 
 For this purpose there must be an [i18n](../utils/i18n.html) properties file inside the bundle of the configuration status provider that has a message declared for the message key of the `ConfigStatusMessage`.
-The actual message key is built by the operation `withMessageKeySuffix(String)` of the message´s builder in the manner that the given message key suffix is appended to *config-status."config-status-message-type."*.
+The actual message key is built by the operation `withMessageKeySuffix(String)` of the message´s builder in the manner that the given message key suffix is appended to _config-status."config-status-message-type."_.
 
 As a result depending on the type of the message the final constructed message keys are:
 
@@ -649,17 +639,21 @@ TODO
 
 Bindings can implement the `DiscoveryService` interface and register it as an OSGi service to inform the framework about devices and services, that can be added as things to the system (see also [Inbox & Discovery Concept](../../concepts/discovery.html)).
 
+::: tip Note
+There must still be the ability to configure the binding via text files (`.things` and `.items`), also if you implement an automatic discovery of Things.
+:::
+
 A discovery service provides discovery results.
 The following table gives an overview about the main parts of a `DiscoveryResult`:
 
-| Field | Description |
-|-------|-------------|
-| `thingUID` | The `thingUID` is the unique identifier of the specific discovered thing (e.g. a device's serial number). It  *must not* be constructed out of properties, that can change (e.g. IP addresses). A typical `thingUID` could look like this: `hue:bridge:001788141f1a`
-| `thingTypeUID` | Contrary to the `thingUID` is the `thingTypeUID` that specifies the type the discovered thing belongs to. It could be constructed from e.g. a product number. A typical `thingTypeUID` could be the following: `hue:bridge`.
-| `bridgeUID` | If the discovered thing belongs to a bridge, the `bridgeUID` contains the UID of that bridge.
-| `properties` | The `properties` of a `DiscoveryResult` contain the configuration for the newly created thing.
-| `label` | The human readable representation of the discovery result. Do not put IP/MAC addresses or similar into the label but use the special `representationProperty` instead. |
-| `representationProperty` | The name of one of the properties or configuration parameters, which best discriminates the result from other results of the same type. See chapter [Representation Property](#representation-property) below. |
+| Field                    | Description                                                                                                                                                                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `thingUID`               | The `thingUID` is the unique identifier of the specific discovered thing (e.g. a device's serial number). It  _must not_ be constructed out of properties, that can change (e.g. IP addresses). A typical `thingUID` could look like this: `hue:bridge:001788141f1a` |
+| `thingTypeUID`           | Contrary to the `thingUID` is the `thingTypeUID` that specifies the type the discovered thing belongs to. It could be constructed from e.g. a product number. A typical `thingTypeUID` could be the following: `hue:bridge`.                                         |
+| `bridgeUID`              | If the discovered thing belongs to a bridge, the `bridgeUID` contains the UID of that bridge.                                                                                                                                                                        |
+| `properties`             | The `properties` of a `DiscoveryResult` contain the configuration for the newly created thing.                                                                                                                                                                       |
+| `label`                  | The human readable representation of the discovery result. Do not put IP/MAC addresses or similar into the label but use the special `representationProperty` instead.                                                                                               |
+| `representationProperty` | The name of one of the properties or configuration parameters, which best discriminates the result from other results of the same type. See chapter [Representation Property](#representation-property) below.                                                       |
 
 To simplify the implementation of custom discovery services, an abstract base class `AbstractDiscoveryService` implements the `DiscoveryService` and just needs to be extended.
 Subclasses of `AbstractDiscoveryService` do not need to handle the `DiscoveryListeners` themselves, they can use the methods `thingDiscovered` and `thingRemoved` to notify the registered listeners.
@@ -843,7 +837,7 @@ See [i18n](../utils/i18n.html#discovery) for more information.
 ::: tip Hint!
 To make it work you have to inject references to the `LocaleProvider` and the `TranslationProvider` services into your implementation.
 The `AbstractDiscoveryService` already provides `protected` properties, which are not yet linked to a service.
-The devoloper has to take care about that.
+The developer has to take care about that.
 
 ```java
     protected @NonNullByDefault({}) TranslationProvider i18nProvider;
@@ -962,7 +956,7 @@ mDNS discovery is implemented in the framework as `MDNSDiscoveryService`.
 To facilitate the development, binding developers only need to implement a `MDNSDiscoveryParticipant`.
 Here the developer only needs to implement four simple methods:
 
-- `getServiceType` - Defines the [mDNS service type](https://www.dns-sd.org/ServiceTypes.html).
+- `getServiceType` - Defines the [mDNS service type](http://www.dns-sd.org/ServiceTypes.html).
 - `getSupportedThingTypeUIDs` - Returns the list of thing type UIDs that this participant supports.
     The discovery service uses this method of all registered discovery participants to return the list of currently supported thing type UIDs.
 - `getThingUID` - Creates a thing UID out of the mDNS service info or returns `null` if this is not possible.
@@ -1023,58 +1017,3 @@ This is done by implementing the `getServices` method in your bridge handler:
 ## Frequently asked questions / FAQ
 
 Various binding related questions are answered in our [Binding development FAQ](faq.html).
-
-## Include the Binding in the Build
-
-Once you are happy with your implementation, you need to integrate it in the Maven build and add it to the official distro.
-
-- Add a new line in the [bundle pom.xml](https://github.com/openhab/openhab-addons/blob/main/bundles/pom.xml).
-- Add a new line in the [binding pom.xml](https://github.com/openhab/openhab-addons/blob/main/bom/openhab-addons/pom.xml).
-- If you have a dependency on a transport bundle (e.g. upnp, mdns or serial) or an external library,
-  make sure to add a line for this dependency in the `/src/main/feature/feature.xml` file in your binding folder. See the other bindings as an example.
-- Add your binding to the [CODEOWNERS](https://github.com/openhab/openhab-addons/blob/main/CODEOWNERS) file so that you get notified by Github when someone adds a pull request towards your binding.
-
-> Please make sure you add the above entries at their alphabetically correct position!
-
-Before you create a pull request on GitHub, you should now run
-
-```bash
-mvn clean install
-```
-
-from the repository root to ensure that the build works smoothly (that step takes about 30 minutes).
-
-The build includes [Tooling for static code analysis](https://github.com/openhab/static-code-analysis) that will validate your code against the openHAB Coding Guidelines and some additional best practices.
-Please fix all the priority 1 issues and all issues with priority 2 and 3 that are relevant (if you have any doubt don't hesitate to ask).
-to
-
-You can always run the above command from within your bindings directory to speed the build up and fix and check reported errors.
-Formatting error can be fixed by
-
-```bash
-mvn spotless:apply
-```
-
-Re-run the build to confirm that the checks are passing.
-If it does, it is time to [contribute your work](../contributing.html)!
-
-## Add your binding's logo to the openHAB website
-
-After your pull request has been merged and the next openHAB version is released, your binding will be available in the addons search on the openHAB website with a default logo.
-
-You can upload a logo to display it on the openhab.org start page, the addon search and in the readme.
-
-These are the requirements for logos:
-
-- PNG (transparancy is preferred)
-- 512x512 pixels or smaller in one dimension, if it's not a square logo
-- Less than 30kB
-
-File size is key as the website displays hundreds of small logos on the same page.
-To shrink the file size, save your logo with Palette-Based Colors (sometimes called "Indexed-RGBA").
-Also, JPEG compression artifacts from prior conversions or halo around the logo increases file size dramatically.
-There are online converters to convert your True Color PNG logo to Palette-Based Colors. E.g. <https://compresspng.com/>.
-Or use zopflipng: `zopflipng -m --filters=0me --lossy_8bit --lossy_transparent -y logo.png logo.png`
-
-*After* your binding's pull request has been merged, you can upload your logo by filing another pull request to the [openhab-docs/images/addons/](https://github.com/openhab/openhab-docs/tree/main/images/addons) repository.
-Your logo will be available after the next website build.

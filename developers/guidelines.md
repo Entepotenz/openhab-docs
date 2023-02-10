@@ -5,8 +5,6 @@ title: Coding Guidelines
 
 # Coding Guidelines
 
-{:.no_toc}
-
 The following guidelines apply to all (Java) code of the openHAB project.
 They must be followed to ensure a consistent code base for easy readability and maintainability.
 Exceptions can certainly be made, but they should be discussed and approved by a project maintainer upfront.
@@ -16,10 +14,7 @@ To speed up the contribution process, we therefore advice to go through this che
 
 If you are just keen on binding development, you may skip this document first and come back later.
 
-{::options toc_levels="2,3"/}
-
-- TOC
-{:toc}
+[[toc]]
 
 ## A. Directory and File Layout
 
@@ -68,7 +63,7 @@ Code styles files are located in here: <https://github.com/openhab/static-code-a
 
 #### Java Code
 
-The rules are defined using the Eclipse Java Formatter definitions. There are plugins available for several IDEs that support these definitons.
+The rules are defined using the Eclipse Java Formatter definitions. There are plugins available for several IDEs that support these definitions.
 
 - Official [openHAB Eclipse IDE setup](ide/eclipse.html) is preconfigured
 - Eclipse standalone installation
@@ -86,7 +81,7 @@ The rules are defined at <https://github.com/openhab/static-code-analysis/tree/m
 
 ### Java Coding Style
 
-- The [Java naming conventions](https://java.about.com/od/javasyntax/a/nameconventions.htm) should always be used and are descibed in detail at the link, a quick summary is:
+- The [Java naming conventions](https://java.about.com/od/javasyntax/a/nameconventions.htm) should always be used and are described in detail at the link, a quick summary is:
   - Channel IDs: `lowerCamelCase`
   - Variables: `lowerCamelCase`
   - Constants: `ALL_UPPER_CASE`
@@ -100,7 +95,7 @@ public static <T> boolean isEqual(GenericsType<T> g1, GenericsType<T> g2){
 
 - Code MUST not show any warnings.
   Warnings that cannot be circumvented should be suppressed by using the `@SuppressWarnings` annotation.
-- Your classes are generally organised within an internal package
+- Your classes are generally organized within an internal package
 
 ```java
 org.openhab.binding.coolbinding.internal
@@ -137,7 +132,7 @@ Data-transfer-objects (DTOs map from JSON/XML to Java classes) do not require Ja
 
 ## D. Language Levels and Libraries
 
-1. openHAB generally targets the long time supported Java 11 release.
+1. openHAB generally targets the long time supported Java 17 release.
 1. The [OSGi Core Release 7](https://osgi.org/download/r7/osgi.core-7.0.0.pdf) with [OSGi Compendium Release 7](https://osgi.org/download/r7/osgi.cmpn-7.0.0.pdf) is targeted, and newer features should not be used.
 1. [SLF4J](http://slf4j.org) is used for logging.
 
@@ -200,9 +195,9 @@ void myFun() {
 
 ```java
 void myFun() {
-    logger.trace("Enter myfun"); // DONT, DONT, really DONT do that
+    logger.trace("Enter myfun"); // DON'T, DON'T, really DON'T do that
     doSomething();
-    logger.trace("Leave myfun"); // DONT, DONT, really DONT do that
+    logger.trace("Leave myfun"); // DON'T, DON'T, really DON'T do that
 }
 ```
 
@@ -210,7 +205,7 @@ void myFun() {
 
 ```java
 void myFun() {
-    logger.debug("And now the thing goes online"); // DONT, DONT, really DONT do that
+    logger.debug("And now the thing goes online"); // DON'T, DON'T, really DON'T do that
     updateState(ThingState.ONLINE);
 }
 ```
@@ -274,7 +269,7 @@ You will receive detailed information (path to the file, line and message) listi
 
 [Null annotations](https://wiki.eclipse.org/JDT_Core/Null_Analysis) are used from the Eclipse JDT project.
 
-Those annotations help the compiler and our static code analyser to figure out if a potential null pointer access would happen in your code.
+Those annotations help the compiler and our static code analyzer to figure out if a potential null pointer access would happen in your code.
 
 Classes (except data transfer objects (DTO)) must be annotated with `@NonNullByDefault`:
 

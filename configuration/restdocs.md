@@ -20,7 +20,7 @@ Be aware that the documentation of the REST API may not be automatically install
 - Interacting with openHAB from other programs; many programming languages and automation tools can easily make use of REST API
 - Using third party software on cell phones, such as tasker to [open your garage door](https://community.openhab.org/t/triggering-items-using-openhab-2s-rest-api-from-tasker/14027)
 
-The openHAB REST API is excellently documented with detailled use instructions.
+The openHAB REST API is excellently documented with detailed use instructions.
 It would vastly exceed this space to present all possible examples.
 Nevertheless, here is some examples using [curl](https://en.wikipedia.org/wiki/CURL), a common command line tool available for many platforms:
 
@@ -52,17 +52,17 @@ Nevertheless, here is some examples using [curl](https://en.wikipedia.org/wiki/C
 
   ```bash
   # ThingStatusInfoChangedEvent - The status of a thing changed.
-  curl "http://{openHAB_IP}:8080/rest/events?topics=smarthome/things/{thingUID}/statuschanged"
+  curl "http://{openHAB_IP}:8080/rest/events?topics=openhab/things/{thingUID}/statuschanged"
 
   # ChannelTriggeredEvent - A channel has been triggered.
-  curl "http://{openHAB_IP}:8080/rest/events?topics=smarthome/channels/{channelUID}/triggered"
+  curl "http://{openHAB_IP}:8080/rest/events?topics=openhab/channels/{channelUID}/triggered"
   ```
 
 The commands above have been copied from the REST API documentation for illustration.
 
 ## Rest Api Explorer
 
-You can try and validate rest api calles from within the openHAB UI.
+You can try and validate rest api calls from within the openHAB UI.
 Just log in with an admin user, navigate to `Developer Tools -> API Explorer` and start exploring.
 
 ## Authentication

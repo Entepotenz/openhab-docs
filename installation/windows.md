@@ -9,10 +9,7 @@ The following instructions will guide you through the process of setting up open
 
 This page is structured as follows:
 
-{::options toc_levels="2..4"/}
-
-- TOC
-{:toc}
+[[toc]]
 
 ## Preparation of the environment
 
@@ -66,7 +63,7 @@ By installing the openHAB process as a service in Windows, you can:
 
 #### Windows Service Installation Steps
 
-1. Complete the [prerequisites](#prerequisites) and regular [installation](#installation) steps.
+1. Complete the [prerequisites](#before-you-start) and regular [installation](#installation) steps.
 1. Issue the following two commands in your openHAB console:
 
     ```shell
@@ -176,14 +173,14 @@ By installing the openHAB process as a service in Windows, you can:
 
 Assuming a successful install, you will now have various folders inside `C:\openHAB`:
 
-|                                  | Windows Installation         |
-|:--------------------------------:|:-----------------------------|
-| openHAB application              | `C:\openHAB\runtime`        |
-| Additional add-on files          | `C:\openHAB\addons`         |
-| Site configuration               | `C:\openHAB\conf`           |
-| Log files                        | `C:\openHAB\userdata\logs`  |
-| Userdata like rrd4j databases    | `C:\openHAB\userdata`       |
-| Service configuration            | `C:\openHAB\userdata\etc`   |
+|                               | Windows Installation       |
+| :---------------------------: | :------------------------- |
+|      openHAB application      | `C:\openHAB\runtime`       |
+|    Additional add-on files    | `C:\openHAB\addons`        |
+|      Site configuration       | `C:\openHAB\conf`          |
+|           Log files           | `C:\openHAB\userdata\logs` |
+| Userdata like rrd4j databases | `C:\openHAB\userdata`      |
+|     Service configuration     | `C:\openHAB\userdata\etc`  |
 
 ## What next?
 
@@ -213,7 +210,10 @@ Update-openHAB -OHVersion x.x.x
 
 Now that openHAB has updated, you only need to run the above commands again for future versions.
 
-### Uninstallation
+NB: Due to an issue with long file paths sometimes the update script may fail after the 'Copying files...' stage.
+This can be resolved by deleting the c:\openHAB\userdata\tmp folder.
+
+### Deinstallation
 
 - perform a backup as described above
 - uninstall openHAB as a Windows service: run PowerShell as an administrator and use the following commands
@@ -230,7 +230,7 @@ C:\openHAB\userdata\bin\openHAB-service.bat remove
 You can connect to openHAB's console using the the `C:\openHAB\runtime\bin\client.bat` script on the local machine.
 Alternatively, you can use a standard SSH client:
 
-1. Install an SSH client application, e.g., [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html), [KiTTY](http://kitty.9bis.net/) or [Xshell 5](https://www.netsarang.com/products/xsh_overview.html)
+1. Install an SSH client application, e.g., [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html), [KiTTY](http://kitty.9bis.net/) or [Xshell](https://www.netsarang.com/en/xshell/)
 
 1. Setup a session with the following parameters:
 

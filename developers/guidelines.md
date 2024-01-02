@@ -28,8 +28,8 @@ The structure of a binding follows the structure of a typical OSGi bundle projec
 |---- java                Your Java code
 |-------- org/openhab/[...]
 |- src/main/resources/OH-INF
-|---- binding
-|-------- binding.xml     Binding name, description and other meta data
+|---- addon
+|-------- addon.xml       Binding name, description and other meta data
 |---- config              Configuration description files when not in things files
 |-------- *.xml
 |---- i18n                Your localized binding texts
@@ -50,6 +50,20 @@ The structure of a binding follows the structure of a typical OSGi bundle projec
 - Every Java file must have a license header. You can run ```mvn license:format``` on the root of the repo to automatically add missing headers.
 
 ## B. Code formatting rules & style
+
+### Naming Convention
+
+To ensure consistency for users, new bindings should use the following naming convention:
+
+- Thing type id: `lower-case-hyphen`
+- Channel type id: `lower-case-hyphen`
+- Channel group id: `lower-case-hyphen`
+- Channel id: `lower-case-hyphen`
+- Thing property: `camelCase`
+- Config parameter: `camelCase`
+- Profile URI: `lower-case-hyphen`
+- Profile type id for transformations: `UPPER_CASE`
+- XML files in src/*/resources: `lower-case-hyphen.xml`
 
 ### Code format
 
@@ -82,7 +96,6 @@ The rules are defined at <https://github.com/openhab/static-code-analysis/tree/m
 ### Java Coding Style
 
 - The [Java naming conventions](https://java.about.com/od/javasyntax/a/nameconventions.htm) should always be used and are described in detail at the link, a quick summary is:
-  - Channel IDs: `lowerCamelCase`
   - Variables: `lowerCamelCase`
   - Constants: `ALL_UPPER_CASE`
 - Generics must be used where applicable. See example below:
@@ -133,7 +146,7 @@ Data-transfer-objects (DTOs map from JSON/XML to Java classes) do not require Ja
 ## D. Language Levels and Libraries
 
 1. openHAB generally targets the long time supported Java 17 release.
-1. The [OSGi Core Release 7](https://osgi.org/download/r7/osgi.core-7.0.0.pdf) with [OSGi Compendium Release 7](https://osgi.org/download/r7/osgi.cmpn-7.0.0.pdf) is targeted, and newer features should not be used.
+1. The [OSGi Core Release 8](https://osgi.org/download/r8/osgi.core-8.0.0.pdf) with [OSGi Compendium Release 8](https://osgi.org/download/r8/osgi.cmpn-8.0.0.pdf) is targeted, and newer features should not be used.
 1. [SLF4J](http://slf4j.org) is used for logging.
 
 You might also have the need to use other libraries for specific use cases like XML processing, networking etc.
@@ -146,7 +159,7 @@ See [Default libraries](#default-libraries) for more details.
 1. Creation of threads must be avoided.
   Instead, resort into using existing schedulers which use pre-configured thread pools.
   If there is no suitable scheduler available, start a discussion in the forum about it rather than creating a thread by yourself.
-  For periodically executed jobs that do not require a fixed rate [scheduleWithFixedDelay](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html#scheduleWithFixedDelay(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)) should be preferred over [scheduleAtFixedRate](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html#scheduleAtFixedRate(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)).
+  For periodically executed jobs that do not require a fixed rate [scheduleWithFixedDelay](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html#scheduleWithFixedDelay(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)) should be preferred over [scheduleAtFixedRate](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html#scheduleAtFixedRate(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)).
 1. Bundles need to cleanly start and stop without throwing exceptions or malfunctioning.
   This can be tested by manually starting and stopping the bundle from the console (```stop <bundle-id>``` resp. ```start <bundle-id>```).
 1. Bundles must not require any substantial CPU time.
@@ -167,13 +180,13 @@ class MyCoolClass {
 }
 ```
 
-- Parametrized logging must be used (instead of string concatenation).
+- Parameterized logging must be used (instead of string concatenation).
 
 ```java
 void myFun() {
     String someValue = "abc";
     int someInt = 12;
-    logger.log("Current value is {} and int is {}", someValue, someInt);
+    logger.debug("Current value is {} and int is {}", someValue, someInt);
 }
 ```
 

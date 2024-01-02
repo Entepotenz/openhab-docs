@@ -45,6 +45,7 @@ This method uses a time-weighted average calculation
 - minimum: gets the minimum value of the State of the given Item since a certain point in time
 - maximum: gets the maximum value of the State of the given Item since a certain point in time
 - maximum: gets the sum of the State of the given Item since a certain point in time
+- historic state: gets the historic state at a certain point in time
 
 In the case of the following two functions the block changes its appearance by replacing the time with an option to chose if the equal value should be skipped or not:
 
@@ -53,7 +54,12 @@ In the case of the following two functions the block changes its appearance by r
 - previous state value: Gets the previous state with option to skip to different value as current
 - previous state value time: Gets the time when previous state last occurred with option to skip to different value as current
 
-The skip option set to true allows to search for first state that is different from the current state.
+The persistence dropdown allows to select the persistence storage from which the value should be retrieved.
+It automatically shows only the storage types that are currently installed on your openHAB instance.
+
+Note that not all persistence storage types (i.e. the default rrd4j) support all statistical methods.
+
+The **skip option** set to true allows to search for first state that is different from the current state.
 
 _Important:_ This option is not supported by all persistence databases and may throw an error in that case (for example the standard rrd4j does _not_ support it while influxdb does support it).
 

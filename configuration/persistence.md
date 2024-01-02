@@ -59,20 +59,102 @@ The following strategies are defined internally and may be used in place of `str
 - `everyChange`: persist the Item state whenever its state has changed
 - `everyUpdate`: persist the Item state whenever its state has been updated, even if it did not change
 - `restoreOnStartup`: load and initialize the last persisted state of the Item on openHAB startup (if the Item state is undefined (`UNDEF`)).
+- `forecast`: check for persisted states with timestamps in the future and restore these states at the given time
+
+It is recommended to use different items for forecasted (i.e. future) values and historic data.
+As a result mixing `forecast` strategy with other strategies is not recommended (except `restoreOnStartup`).
 
 #### Cron Persistence Triggers
 
 openHAB uses [Quartz](https://www.quartz-scheduler.org/documentation) for time-related cron events.
 See the [Rules article]({{base}}/configuration/rules-dsl.html#time-based-triggers) for more information.
 
+### Filters
+
+This (optional) section allows you to name and define one or more `Filters`.
+The syntax is as follows:
+
+```java
+Filters {
+  <filterName1> : <filter definition>
+  <filterName2> : <filter definition>
+  ...
+}
+```
+
+Each filter definition starts with a unique identifier that identifies the filter type.
+
+#### Equals Filter `=` / Not Equals Filter (`!`)
+
+The equals (not equals) filter allows to persist only a given set of values (or exclude them).
+It can be used with every item type.
+The values need to be exactly the string representation of the state.
+One or more values can be given, separated by a comma `,`.
+
+```java
+Filters {
+  exactlySomeState : = "ARMED", "UNARMED"
+  notTheseStates : ! "UNDEF", "NULL"
+}
+```
+
+#### Threshold Filter (`>`)
+
+The threshold filter allows to discard values that are close to the last persisted value.
+It can only be used with `Number` items and has two modes: "relative" and "absolute".
+
+In "relative" mode the threshold is calculated as percentage of the last persisted value.
+This mode is selected by a `%` character and a decimal value (e.g. `> % 10` for "at least 10% deviation").
+
+In "absolute" mode the threshold is calculated by absolute difference to the last persisted value.
+This mode is selected by a decimal value with optional unit (e.g. `> 5 mA` for "at least 5 mA deviation").
+For plain `Number` items the unit can be omitted.
+
+```java
+Filters {
+  fiveMilliAmps : > 5 mA
+  tenPercent : > % 10
+}
+```
+
+#### Include Filter (`[]`) / Exclude Filter (`][`)
+
+The include (exclude) filter allows to define a range for accepted (rejected) values.
+It can only be used with `Number` items.
+
+The range is defined by to decimal values.
+The boundaries are always considered to be part (not part) of the defined range (i.e. a lower boundary of `5` considers a value of `5` to be inside the range for an include filter and outside of the range for exclude filters).
+In case of dimensional items (e.g `Number:Temperature`) a unit MUST be provided.
+
+```java
+Filters {
+  fromFiveToTenKelvin : [] 5 10 K
+  notBetweenSevenAndNine : ][ 7 9
+}
+```
+
+#### Time Filter (`T`)
+
+The time filter allows to discard values that arrive within the given time after a previous value (e.g. when using the `everyUpdate` strategy).
+It can be used with every item type.
+The filter definition consists of an integer value followed by a unit.
+The allowed units are `s` (seconds), `m` (minutes), `h` hours and `d` days.
+Composed values (`1 m 30 s`) are not possible and need to be expressed by a single value (`90 s`).
+
+```java
+Filters {
+  thirtySeconds : T 30 s
+}
+```
+
 ### Items
 
-This section defines which items should be persisted with which strategy.
+This section defines which items should be persisted with which strategy and filters.
 The syntax is as follows:
 
 ```java
 Items {
-    <itemlist1> [-> "<alias1>"] : [strategy = <strategy1>, <strategy2>, ...]
+    <itemlist1> [-> "<alias1>"] : [strategy = <strategy1>, <strategy2>, ...] [filter = <filter1>, <filter2>, ...]
     <itemlist2> [-> "<alias2>"] : [strategy = <strategyX>, <strategyY>, ...]
     ...
 
@@ -99,6 +181,10 @@ Strategies {
         everyDay  : "0 0 0 * * ?"
 }
 
+Filters {
+        fivepercent : > % 5
+        atMostOnceAMinute : T 1 m
+  }
 /*
  * Each line in this section defines for which Item(s) which strategy(ies) should be applied.
  * You can list single items, use "*" for all items or "groupitem*" for all members of a group
@@ -161,7 +247,7 @@ Here is the full list of available persistence extensions:
 | `<item>.updatedSince(ZonedDateTime)`                    | Checks if the state of the Item has been updated since a certain point in time                                                                                             |
 | `<item>.updatedBetween(ZonedDateTime, ZonedDateTime)`   | Checks if the state of the Item has been updated between certain points in time                                                                                            |
 | `<item>.maximumSince(ZonedDateTime)`                    | Gets the maximum value of the State of a persisted Item since a certain point in time (returns HistoricItem)                                                               |
-| `<item>.maximumBetween(ZonedDateTime ZonedDateTime)`    | Gets the maximum value of the State of a persisted Item between certain points in time (returns HistoricItem)                                                              |
+| `<item>.maximumBetween(ZonedDateTime, ZonedDateTime)`   | Gets the maximum value of the State of a persisted Item between certain points in time (returns HistoricItem)                                                              |
 | `<item>.minimumSince(ZonedDateTime)`                    | Gets the minimum value of the State of a persisted Item since a certain point in time (returns HistoricItem)                                                               |
 | `<item>.minimumBetween(ZonedDateTime, ZonedDateTime)`   | Gets the minimum value of the State of a persisted Item between certain points in time (returns HistoricItem)                                                              |
 | `<item>.averageSince(ZonedDateTime)`                    | Gets the average value of the State of a persisted Item since a certain point in time. This method uses a time-weighted average calculation (see example below)            |

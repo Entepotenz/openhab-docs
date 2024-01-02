@@ -19,6 +19,8 @@ Please be sure you have installed the required supporting applications as descri
 
 ### Set the `JAVA_HOME` System Environment Variable in Windows
 
+Note: If you have installed Zulu Java 17 (highly recommended for OH 4.x) you may skip this step because the JAVA_HOME environment variable was created during installation.
+
 - Navigate to: Control Panel ➡️ System and Security ➡️ System ➡️ Advanced System Settings ➡️ Environment Variables ➡️ System Variables
 - Create a New System Variable named JAVA_HOME (or update the existing one) to match the installation directory of the Java Platform chosen and installed in the step [Prerequisites]({{base}}/installation/index.html#prerequisites).
 
@@ -93,6 +95,7 @@ By installing the openHAB process as a service in Windows, you can:
     set.default.OPENHAB_RUNTIME=%OPENHAB_HOME%\runtime
     set.default.OPENHAB_USERDATA=%OPENHAB_HOME%\userdata
     set.default.OPENHAB_LOGDIR=%OPENHAB_USERDATA%\logs
+    set.default.KARAF_LOG=%OPENHAB_USERDATA%\logs
     set.default.KARAF_HOME=%OPENHAB_RUNTIME%
     set.default.KARAF_BASE=%OPENHAB_USERDATA%
     set.default.KARAF_DATA=%OPENHAB_USERDATA%

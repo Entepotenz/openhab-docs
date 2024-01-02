@@ -33,16 +33,52 @@ Bring up the sidebar through Developer Tools or the key combination <kbd>Alt</kb
 
 ![Developer Sidebar](images/developer-sidebar.png)
 
-Note that the sidebar will not come up if your display is to narrow.
-It will not work on a phone nor on most tablet displays.
+Note that the sidebar will not come up if your display is too narrow.
+It will not work on a phone nor in portrait mode on most tablet displays.
 
-There are four tabs on the sidebar.
+There are four tabs on the sidebar, and the search field at the top.
+
+### Search
+
+Imagine you need to find all usages of an Item in rules or pages.
+You could open all your rules and pages to check them, or just use the developer sidebar search.
+Enter your Item name, and you will see in which rules, scenes, scripts and pages that Item is used.
+
+The developer sidebar search ignores case and searches inside the following entities:
+
+- Things
+  - UID
+  - label
+- Items
+  - name
+  - label
+  - tags (requires exact match)
+  - metadata
+- Pages
+  - uid
+  - label
+  - content (widgets, tabs, charts, etc. with their configuration)
+- Transformations
+  - uid
+  - label
+  - type
+- Rules, Scenes & Scripts
+  - Item name & Thing UID of triggers, actions & conditions
+  - script code (e.g. Rules DSL, JavaScript, and even Blockly)
+  - script MIME types (requires exact match)
+  - Blockly scripts (using 'block', 'blockly' or 'blocksource' as search string, where case is ignored)
+  - tags (requires exact match)
+- Persistence Configurations:
+  - label & service id of persistence service
+  - Items persisted by persistence service
 
 ### Pinned Objects
 
 Let's say you are working on your lighting automations which involves Things, Items, and Rules.
 Instead of keeping a dozen browser tabs open and flipping between them you can pin these objects to the sidebar.
-In the search box at the top, enter a search term which can be part of an object's name, ID, label, etc.
+
+Enter a search term in the search filed at the top to search within Items, Things, Rules, Scripts, Scenes and Pages.
+The search term can be part of an object's name, ID, label, etc.
 
 ![search](images/developer-sidebar-search.png)
 

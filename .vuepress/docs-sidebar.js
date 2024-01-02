@@ -26,6 +26,7 @@ module.exports = [
       'tutorial/rules_basic',
       'tutorial/rules_blockly',
       'tutorial/rules_advanced',
+      'tutorial/rules_scenes',
       'tutorial/tips-and-tricks'
     ]
   },
@@ -107,7 +108,9 @@ module.exports = [
       'ui/tabbed-pages',
       'ui/chart-pages',
       ['ui/building-pages', 'Building Pages'],
-      ['ui/personal-widgets', 'Creating Personal Widgets'],
+      'ui/personal-widgets',
+      'ui/widget-expressions-variables',
+      'ui/css-pages-widgets',
       ['ui/components/', 'Component Reference'],
       'ui/habpanel/habpanel',
       ['apps/android', 'Android App'],

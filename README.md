@@ -9,11 +9,10 @@ The result is available at [https://openhab.org/docs/](https://www.openhab.org/d
 ## How it works
 
 In this repo you can find and improve all _general_ documentation contents.
-In fact that is all you can see in the `main` branch.
-There are also other _read-only_ branches, which hold external content like the _add-ons_ and _concepts_ documentation.
-We will read about them later.
+In fact, that is all you can see in the `main` branch.
+There are other _read-only_ branches, which hold external content like the _add-ons_ and _concepts_ documentation, which is explained in more details below.
 
-### So I can't improve an add-on article here?
+### So I cannot improve an add-on article here?
 
 Correct, this is done in the original repository of the add-on.
 You may want to know how to find the right file in all of those repos?
@@ -44,7 +43,7 @@ You can read a bit more below about our external resources and how we get them.
 
 ### Automatically Generated Parts
 
-Those parts include __all__ add-on documentation files, no matter if they are from the `openhab-core` repo, the `openhab-addons` repo or any special binding repo like _habmin_, _zwave_ or the _alexa skill_.
+Those parts include **all** add-on documentation files, no matter if they are from the `openhab-core` repo, the `openhab-addons` repo or any special binding repo like _habmin_, _zwave_ or the _alexa skill_.
 
 We are keeping all those files at their original location, because it simply doesn't make sense to keep them here.
 Imagine you want to do an improvement of the zwave binding and have to update the readme file in a completely different place.
@@ -59,7 +58,7 @@ The process below is subject to changes until the openHAB.x website become the p
 
 ### How the documentation build works
 
-We have set up our [build server](https://ci.openhab.org/view/Documentation%20(3.x)/) to do the magic automatically.
+We have set up our [build server](https://ci.openhab.org/view/Documentation/) to do the magic automatically.
 There are several triggers (mostly time based), which will then _gather the external contents_ and move them to our [final](https://github.com/openhab/openhab-docs/tree/final) branch.
 You can find this migrated external content in the _final_ branch under:
 
@@ -77,12 +76,12 @@ Afterwards we will redeploy the website with the latest content from the _final_
 #### Build triggers investigated
 
 There are two triggers available currently.
-The `merge docs` job is triggerd after something has been added to the documentation through this repository.
-The `gather external docs` job is started with a __successful__ build of the openhab-distribution.
-A successful disribution build will include all of the latest changes that have been made to external sources like add-ons.
-So when a distribution build is successful, we will trigger the gathering of all external sources.
+The `merge docs` job is triggered after something has been added to the documentation through this repository.
+The `gather external docs` job is started with a **successful** build of the openhab-distribution.
+A successful distribution build will include all the latest changes that have been made to external sources like add-ons.
+So when a distribution build is successful, it will trigger the gathering of all external sources.
 
-When one of these jobs is finished, we will then notify our website hosting service to start a new website build.
+When one of these jobs is finished, it will then notify our website hosting service to start a new website build.
 This is recognized due to new commits in the final branch of this repository.
 The new build will include all the latest changes in the code repository and in all external repositories.
 
